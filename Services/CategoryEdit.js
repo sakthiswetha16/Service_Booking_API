@@ -18,13 +18,15 @@ exports.categoryeditCategory =async(req, res) => {
   if (error) {
     return res.status(400).send({ status: false, message: error.details[0].message });
   }
-  const updates = req.body.map((category) => {
-    const {  Name, Description,is_Active ,Category_Id} = category;
-    const query = 'UPDATE Category SET Name = ?, Description = ?,is_Active=? WHERE Category_Id = ?';
-    const values = [Name, JSON.stringify(Description),is_Active,Category_Id];
-    return { query, values };
+  const updates = req.body.map((category) => {
+    const { Category_Id, ...updateFields } = category;
+  
+    const query = `UPDATE Category SET ? WHERE Category_Id = ?`;
+    const updateValues = { ...updateFields, Description: JSON.stringify(category.Description) };
+  
+    const values = [updateValues, Category_Id];
+    return { query,values};
   });
-
   try {
     await Promise.all(
       updates.map(({ query, values }) => {
@@ -32,7 +34,6 @@ exports.categoryeditCategory =async(req, res) => {
       db.query(query, values, (error, results) => {
           if (error) {
               console.error('Database error:', error);
-              reject('Invalid data');
             } else if (results.affectedRows === 0) {
               reject('No records updated');
             } else {

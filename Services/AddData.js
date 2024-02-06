@@ -25,7 +25,7 @@ exports.addUser_Details = (req, res) => {
 
   if (error) {
     return res.status(400).send({ status: false, message: error.details[0].message });
-  }
+}
 
 
 const data=req.body;

@@ -10,30 +10,45 @@ const schema = Joi.array().items(
   })
 );
 
-exports.addSubCategory = (req, res) => {
-  const { error } = schema.validate(req.body);
+const generateValues = (subCategory) => {
+  subCategory.Description = JSON.stringify(subCategory.Description);
+  const columns = Object.keys(subCategory);
+  const values = Object.values(subCategory);
+  return [columns, values];
+};
 
+exports.AddSubCategoryData = async (subCategoryData) => {
+
+  
+  const { error } = schema.validate(subCategoryData);
   if (error) {
-    return res.status(400).send({ status: false, message: error.details[0].message });
+    console.log(error);
+    return { status: false, message: error.details[0].message };
   }
 
-  const valuesArray = req.body.map(({ Category_Id, Name, Description, is_Active }) => [
-    Category_Id,
-    Name,
-    JSON.stringify(Description),
-    is_Active
-  ]);
+  const values = await Promise.all(subCategoryData.map(generateValues));
 
-  const sql = `INSERT INTO Sub_Category (Category_Id, Name, Description, is_Active) VALUES ?`;
+  const columns = values[0][0]; 
+  const sql = `INSERT INTO Sub_Category (${columns.join(',')}) VALUES ?`;
 
-  console.log(sql, valuesArray);
+  return new Promise((success, fail) => {
+    db.query(sql, [values.map((item) => item[1])], (error) => {
+      if (error) {
+        console.log(error);
+        fail({ status: false, message: 'Subcategory Data Creation Failed' });
+      } else {
+        success({ status: true, message: 'Subcategory Data Creation successfully' });
+      }
+    });
+  });
+};
 
-  db.query(sql, [valuesArray], (error) => {
-    if (error) {
-      console.log(error);
-      res.send({ status: false, message: "User Data Creation Failed" });
-    } else {
-      res.send({ status: true, message: "User Data Creation successfully" });
-    }
-  });
+exports.addSubCategory = async (req, res) => {
+  const result = await exports.AddSubCategoryData(req.body);
+
+  if (result.status) {
+    res.send(result);
+  } else {
+    res.status(400).send(result);
+}
 };

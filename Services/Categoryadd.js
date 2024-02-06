@@ -11,33 +11,31 @@ const schema = Joi.array().items(
 
 exports.addCategory = (req, res) => {
   const { error } = schema.validate(req.body);
-  
+
   if (error) {
-    return res.status(400).send({ status: false, message: error.details[0].message });
-  }
-
-
-const valuesArray = req.body.map(({ Name, Description, is_Active }) => [
-  Name,
-  JSON.stringify(Description),
-  is_Active
-]);
-
-  const sql = `INSERT INTO Category ( Name, Description, is_Active) VALUES ?`;
-
-  
-  console.log(sql,valuesArray);
-
-
-
-db.query(sql, [valuesArray], (error) => {
-  if (error) {
-    console.log(error)
-    res.send({ status: false, message: "User Data Creation Failed" });
-  } else {
-    
-    res.send({ status: true, message: "User Data Creation successfully" });
+    return res.status(400).send({ status: false, message: error.details[0].message });
   }
-});
-};
 
+  const valuesArray = req.body.map((category) => {
+    category.Description = JSON.stringify(category.Description);
+    const columns = Object.keys(category);
+    const values = Object.values(category);
+    return [columns, values];
+  });
+
+  const columns = valuesArray[0][0]; 
+  const sql = `INSERT INTO Category (${columns.join(',')}) VALUES ?`;
+
+  const formattedValues = valuesArray.map((item) => item[1]);
+
+  console.log(sql, formattedValues);
+
+  db.query(sql, [formattedValues], (error) => {
+    if (error) {
+      console.error(error);
+      res.send({ status: false, message: "User Data Creation Failed" });
+    } else {
+      res.send({ status: true, message: "User Data Creation successfully" });
+    }
+  });
+};

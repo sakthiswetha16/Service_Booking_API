@@ -11,7 +11,7 @@ const schema = Joi.array().items(
   })
 );
 
-exports.SubcategoryeditCategory =async(req, res) => {
+exports.Subcategorye =async(req, res) => {
 
   console.log(req.body);
   const { error } = schema.validate(req.body);
@@ -19,13 +19,15 @@ exports.SubcategoryeditCategory =async(req, res) => {
   if (error) {
     return res.status(400).send({ status: false, message: error.details[0].message });
   }
-  const updates = req.body.map((category) => {
-    const { Category_Id, Name, Description,is_Active ,subCategory_Id} = category;
-    const query = 'UPDATE Sub_Category SET Category_Id = ? , Name = ?, Description = ?,is_Active=? WHERE subCategory_Id = ?';
-    const values = [Category_Id,Name, JSON.stringify(Description),is_Active,subCategory_Id];
-    return { query, values };
+  const updates = req.body.map((subcategory) => {
+    const { subCategory_Id, ...updateFields } = subcategory;
+  
+    const query = `UPDATE Sub_Category SET ? WHERE subCategory_Id = ?`;
+    const updateValues = { ...updateFields, Description: JSON.stringify(subcategory.Description) };
+  
+    const values = [updateValues, subCategory_Id];
+    return { query,values};
   });
-
   try {
     await Promise.all(
       updates.map(({ query, values }) => {
