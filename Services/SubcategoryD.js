@@ -10,7 +10,7 @@ const schema = Joi.array().items(
 
 exports.Subcategoryd = async (req, res) => {
   console.log(req.body);
- const { error } = schema.validate(req.body);
+  const { error } = schema.validate(req.body);
 
   if (error) {
     return res.status(400).send({ status: false, message: error.details[0].message });
@@ -21,7 +21,7 @@ exports.Subcategoryd = async (req, res) => {
     const query = 'UPDATE Sub_Category SET is_Active="0" WHERE Name = ? AND subCategory_Id = ?';
     const values = [Name, subCategory_Id];
 
-    
+
 
     return new Promise((resolve, reject) => {
       db.query(query, values, (error, result) => {
@@ -44,6 +44,6 @@ exports.Subcategoryd = async (req, res) => {
     res.json({ status: true, message: 'Deleted successfully' });
   } catch (error) {
     console.error('Database error:', error);
-    res.status(500).json({ status: false, message: 'Internal Server Error' });
-  }
+    res.status(500).json({ status: false, message: 'Internal Server Error' });
+  }
 };

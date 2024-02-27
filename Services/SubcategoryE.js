@@ -7,11 +7,11 @@ const schema = Joi.array().items(
     subCategory_Id: Joi.string().required(),
     Name: Joi.string().required(),
     Description: Joi.object().pattern(Joi.string().required(), Joi.string().required()),
-    is_Active:Joi.string().valid('0','1').required()
+    is_Active: Joi.string().valid('0', '1').required()
   })
 );
 
-exports.Subcategorye =async(req, res) => {
+exports.Subcategorye = async (req, res) => {
 
   console.log(req.body);
   const { error } = schema.validate(req.body);
@@ -21,19 +21,19 @@ exports.Subcategorye =async(req, res) => {
   }
   const updates = req.body.map((subcategory) => {
     const { subCategory_Id, ...updateFields } = subcategory;
-  
+
     const query = `UPDATE Sub_Category SET ? WHERE subCategory_Id = ?`;
     const updateValues = { ...updateFields, Description: JSON.stringify(subcategory.Description) };
-  
+
     const values = [updateValues, subCategory_Id];
-    return { query,values};
+    return { query, values };
   });
   try {
     await Promise.all(
       updates.map(({ query, values }) => {
-      return new Promise((resolve, reject) => {
-      db.query(query, values, (error, results) => {
-          if (error) {
+        return new Promise((resolve, reject) => {
+          db.query(query, values, (error, results) => {
+            if (error) {
               console.error('Database error:', error);
               reject('Invalid data');
             } else if (results.affectedRows === 0) {
@@ -44,10 +44,10 @@ exports.Subcategorye =async(req, res) => {
           });
         });
       })
-);
+    );
 
-res.json({ status: true, message: 'Updates processed successfully' });
+    res.json({ status: true, message: 'Updates processed successfully' });
   } catch (error) {
-    res.status(500).json({ status: false, message: error });
-  }
+    res.status(500).json({ status: false, message: error });
+  }
 };

@@ -19,7 +19,7 @@ const generateValues = (subCategory) => {
 
 exports.AddSubCategoryData = async (subCategoryData) => {
 
-  
+
   const { error } = schema.validate(subCategoryData);
   if (error) {
     console.log(error);
@@ -28,7 +28,7 @@ exports.AddSubCategoryData = async (subCategoryData) => {
 
   const values = await Promise.all(subCategoryData.map(generateValues));
 
-  const columns = values[0][0]; 
+  const columns = values[0][0];
   const sql = `INSERT INTO Sub_Category (${columns.join(',')}) VALUES ?`;
 
   return new Promise((success, fail) => {
@@ -50,5 +50,5 @@ exports.addSubCategory = async (req, res) => {
     res.send(result);
   } else {
     res.status(400).send(result);
-}
+  }
 };

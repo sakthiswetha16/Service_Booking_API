@@ -2,30 +2,34 @@ const db = require('../config/database');
 const Joi = require('joi');
 
 const schema = Joi.array().items(
-  Joi.object({
-    Category_Id: Joi.string().required(),
-    Subcategory_Id: Joi.string().required(),
-    Product_Id: Joi.string(),
-    Name: Joi.string().required(),
-    Trip_start: Joi.string().required(),
-    Trip_end: Joi.string().required(),
-    Description: Joi.object().pattern(Joi.string(), Joi.string()).required(),
-    is_Active: Joi.string().valid('0', '1').required()
-  })
-);
+    Joi.object({
+      booking_id: Joi.string(),
+      passanger_info:Joi.object().pattern(Joi.string(), Joi.string()),
+      pickup: Joi.string(),
+      pickup_address: Joi.string(),
+      duration: Joi.string(),
+      otp: Joi.string(),
+      status: Joi.string(),
+      emp_id: Joi.string(),
+      user_id: Joi.string(),
+      product_id: Joi.string(),
+      waiting_hours: Joi.string(),
+      travelled_km: Joi.string()
+    })
+)
 
-exports.EditData = async (productUpdates) => {
-  const { error } = schema.validate(productUpdates);
+exports.Editbooking = async (bookingUpdates) => {
+  const { error } = schema.validate(bookingUpdates);
   if (error) {
     console.log(error);
     return { status: false, message: error.details[0].message };
   }
 
-  const updates = productUpdates.map((Productdata) => {
-    const { Product_Id, ...updateFields } = Productdata;
-    const query = `UPDATE Product SET ? WHERE Product_Id = ?`;
-    const updateValues = { ...updateFields, Description: JSON.stringify(Productdata.Description) };
-    const values = [updateValues, Product_Id];
+  const updates = bookingUpdates.map((bookingdata) => {
+    const { booking_id, ...updateFields } = bookingdata;
+    const query = `UPDATE booking_details SET ? WHERE booking_id = ?`;
+    const updateValues = { ...updateFields };
+    const values = [updateValues, booking_id];
     console.log(query);
     console.log(values);
     return { query, values };
@@ -55,12 +59,12 @@ exports.EditData = async (productUpdates) => {
   }
 };
 
-exports.Producte = async (req, res) => {
-  const result = await exports.EditData(req.body);
+exports.bookinge = async (req, res) => {
+  const result = await exports.Editbooking(req.body);
 
   if (result.status) {
     res.json(result);
   } else {
     res.status(400).json(result);
-  }
+}
 };

@@ -31,10 +31,10 @@ exports.putUser_Details = (req, res) => {
 
   const setColumn = Object.keys(data).map(column => `${column} = ?`).join(', ');
 
-  
+
   const values = [...Object.values(data), ID];
 
-  const sql =` UPDATE User_Details SET ${setColumn} WHERE ID = ?`;
+  const sql = ` UPDATE User_Details SET ${setColumn} WHERE ID = ?`;
 
   db.query(sql, values, (error, result) => {
     if (error) {
@@ -48,33 +48,3 @@ exports.putUser_Details = (req, res) => {
 
 
 
-
-
-      // req.body.Role +
-      // "', First_Name='" +
-      // req.body.First_Name +
-      // "',Last_Name='" +
-      // req.body.Last_Name +
-      // "',Mail_Id='" +
-      // req.body.Mail_Id +
-      // "',Phone_Number='" +
-      // req.body.Phone_Number +
-      // "',Address='" +
-      // req.body.Address+
-      // "',State='" +
-      // req.body.State +
-      // "',City='" +
-      // req.body.City +
-      // "',Country='" +
-      // req.body.Country +
-      // "',is_Active='" +
-      // req.body.is_Active +
-      // "',is_Login='" +
-      // req.body.is_Login +
-      // "',is_Verify='" +
-      // req.body.is_Verify +
-      // "',Password='" +
-      // req.body.password +
-      // "'  WHERE ID=" +
-      // req.params.ID;
-  
