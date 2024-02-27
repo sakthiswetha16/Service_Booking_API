@@ -147,8 +147,16 @@ exports.GeneratePDF = async (req, res) => {
                 return res.status(500).send({ status: false, message: 'Internal Server Error' });
               }
 
-              const currentDate = new Date().toISOString().replace(/:/g, "-");
-
+             const currentDate = new Date().toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+              }).replace(/[/: ]/g, '-');
+              
               const pdfFileName = `${currentDate}_invoice.pdf`;
 
               res.setHeader('Content-Type', 'application/pdf');
