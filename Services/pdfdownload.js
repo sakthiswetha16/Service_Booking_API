@@ -151,10 +151,7 @@ exports.GeneratePDF = async (req, res) => {
                 timeZone: 'Asia/Kolkata',
                 year: 'numeric',
                 month: 'numeric',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true,
+                day: 'numeric'
               }).replace(/[/: ]/g, '-');
               
               const pdfFileName = `${currentDate}_invoice.pdf`;
