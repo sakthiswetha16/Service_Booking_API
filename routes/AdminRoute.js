@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const AddData = require('../Services/AddData');
-const UpdateData = require('../Services/UpdateData');
+const UpdateData = require('../Services/UpdateData');  
 const DeleteData= require('../Services/DeleteData');
 const ViewData= require('../Services/ViewData');
 const OTPgendrate= require('../Services/OTPgendrate');
@@ -9,7 +9,7 @@ const nodeMailer=require('../Services/Mail')
 const OTPverification= require('../Services/OTPverification');
 const forgotpass=require('../Services/forgotpass')
 const passwordUpdate=require('../Services/passwordUpdate')
-const Signin=require('../Services/Signin')
+const Signin=require('../Services/Signin')   
 const Logout=require('../Services/Logout')
 const Categoryadd=require('../Services/Categoryadd')
 const bulkeditCategory=require('../Services/CategoryEdit')
